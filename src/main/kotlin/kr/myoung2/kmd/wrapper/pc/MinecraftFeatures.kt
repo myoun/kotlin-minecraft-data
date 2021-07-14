@@ -1,9 +1,15 @@
 package kr.myoung2.kmd.wrapper.pc
 
-class Block {
-    var id: Int? = null
-    var name:String? =null
-    var displayName:String? = null
+interface Identifiable {
+    var id:Int?
+    var name:String?
+    var displayName:String?
+}
+
+class Block : Identifiable {
+    override var id: Int? = null
+    override var name:String? =null
+    override var displayName:String? = null
     var hardness:Float?= null
     var resistance:Float? = null
     var stackSize : Int? = null
@@ -21,14 +27,27 @@ class Block {
     var boundingBox:String? = null
 }
 
-class Item {
-    var id:Int? = null
-    var name:String? = null
-    var displayName:String? =null
+class Item : Identifiable {
+    override var id:Int? = null
+    override var name:String? = null
+    override var displayName:String? =null
     var stackSize:Int? = null
     var enchantCategories:List<String>? = null
     var fixedWith:List<String>? = null
     var durability:Int? = null
     var maxDurability:Int? = null
 
+}
+
+class Biome : Identifiable {
+    override var id:Int? = null
+    override var name:String? = null
+    var category:String? = null
+    var temperature:Float? = null
+    var precipitation:String? = null
+    var depth:Float? = null
+    var dimension:String? = null
+    override var displayName:String? = null
+    var color:Int? = null
+    var rainfall:Float? = null
 }

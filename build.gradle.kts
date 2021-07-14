@@ -11,11 +11,8 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib"))
-    // https://mvnrepository.com/artifact/commons-io/commons-io
     implementation("commons-io:commons-io:2.10.0")
-    implementation("org.json:json:20210307")
     implementation("com.google.code.gson:gson:2.8.7")
-
 }
 
 val shade = configurations.create("shade")

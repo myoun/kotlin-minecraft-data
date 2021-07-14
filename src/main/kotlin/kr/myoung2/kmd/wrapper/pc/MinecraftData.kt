@@ -16,43 +16,18 @@ class MinecraftData(val version:String, val edition:String="pc") {
         val jsonString = IOUtils.toString(javaClass.getResourceAsStream(datapath),"UTF-8")
         val jsonObject = JsonParser.parseString(jsonString).asJsonObject
         versionObject = jsonObject.getAsJsonObject(edition).getAsJsonObject(version)
-
     }
 
-    fun blockByName(name:String) : Block {
-        val path = versionObject.get("blocks").asString
-        val jsonString = IOUtils.toString(javaClass.getResourceAsStream("/minecraft-data/data/$path/blocks.json"),"UTF-8")
-        val jsonArray = JsonParser.parseString(jsonString).asJsonArray
-        for (obj in jsonArray) {
-            if (obj !is JsonElement) {
-                continue
-            }
-            val jobject = Gson().fromJson(obj.toString(),Block::class.java)
-            if (jobject.name == name) {
-                return jobject
-            }
-        }
-        throw BlockNotFoundException(name)
-    }
+    // Find By Name
+
+    fun blockByName(name:String) : Block = findByName("blocks",name)
+    fun itemByName(name:String) : Item = findByName("items",name)
+    fun biomeByName(name: String) : Biome = findByName("biomes",name)
 
 
+    // Find By ID
 
-    fun itemByName(name:String) : Item {
-        val path = versionObject.get("items").asString
-        val jsonString = IOUtils.toString(javaClass.getResourceAsStream("/minecraft-data/data/$path/items.json"),"UTF-8")
-        val jsonArray = JsonParser.parseString(jsonString).asJsonArray
-        for (obj in jsonArray) {
-            if (obj !is JsonElement) {
-                continue
-            }
-            val jobject = Gson().fromJson(obj.toString(),Item::class.java)
-            if (jobject.name == name) {
-                return jobject
-            }
-        }
-        throw ItemNotFoundException(name)
-    }
-
+    fun biomeById(id: Int) : Biome = findById("biomes",id)
     fun itemById(id: Int): Item = findById("items", id)
     fun blockById(id:Int): Block = findById("blocks",id)
 
@@ -60,6 +35,21 @@ class MinecraftData(val version:String, val edition:String="pc") {
         val path = versionObject.get(category).asString
         val jsonString = IOUtils.toString(javaClass.getResourceAsStream("/minecraft-data/data/$path/$category.json"),"UTF-8")
         return Gson().fromJson(JsonParser.parseString(jsonString).asJsonArray[id].asJsonObject.toString(),T::class.java)
+    }
+    private inline fun <reified T : Identifiable> findByName(category:String, name:String) : T {
+        val path = versionObject.get(category).asString
+        val jsonString = IOUtils.toString(javaClass.getResourceAsStream("/minecraft-data/data/$path/$category.json"),"UTF-8")
+        val jsonArray = JsonParser.parseString(jsonString).asJsonArray
+        for (obj in jsonArray) {
+            if (obj !is JsonElement) {
+                continue
+            }
+            val jobject = Gson().fromJson(obj.toString(),T::class.java)
+            if (jobject.name == name ) {
+                return jobject
+            }
+        }
+        throw DataNotFoundException(name)
     }
 
 }
@@ -69,7 +59,6 @@ class MinecraftData(val version:String, val edition:String="pc") {
 
 
 // Exceptions
-class BlockNotFoundException(block:String) : Exception("Block $block Not Founded")
-class ItemNotFoundException(block:String) : Exception("Block $block Not Founded")
+class DataNotFoundException(data:String) : Exception("Data $data Not Founded")
 
 

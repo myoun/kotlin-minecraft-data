@@ -8,7 +8,7 @@ class Run {
         @JvmStatic
         fun main(args: Array<out String>) {
             val mcdata = MinecraftData("1.17")
-            println(mcdata.blockById(5).displayName) // Polished Diorite
+            println(mcdata.biomeByName("warm_ocean").id) // Polished Diorite
         }
 
     }
